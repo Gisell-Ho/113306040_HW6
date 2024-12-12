@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1A2B 猜數字遊戲</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        input {
+            padding: 5px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>113306040_HW6_1A2B</h1>
+    <input id="userGuess" type="text" placeholder="輸入 4 個數字">
+    <button onclick="submitGuess()">提交</button>
+    <div id="result"></div>
+    <script src="game.js"></script>
+    <script>
+    	// 產生隨機 4 位不重複數字
+function generateAnswer() {
+    let digits = Array.from({ length: 10 }, (_, i) => i); // [0, 1, ..., 9]
+    let answer = [];
+    for (let i = 0; i < 4; i++) {
+        let randomIndex = Math.floor(Math.random() * digits.length);
+        answer.push(digits.splice(randomIndex, 1)[0]);
+    }
+    return answer;
+}
+
+const answer = generateAnswer();
+let attempts = 0;
+
+// 提交猜測
+function submitGuess() {
+    const inputField = document.getElementById('userGuess');
+    const guess = inputField.value;
+    inputField.value = '';
+
+    // 檢查輸入是否有效
+    if (!/^\d{4}$/.test(guess)) {
+        alert('請輸入四位數字');
+        return;
+    }
+    if (new Set(guess).size !== 4) {
+        alert('請勿輸入重複數字');
+        return;
+    }
+
+    attempts++;
+    const guessArray = Array.from(guess).map(Number);
+
+    // 比對結果
+    let a = 0, b = 0;
+    guessArray.forEach((num, i) => {
+        if (num === answer[i]) {
+            a++;
+        } else if (answer.includes(num)) {
+            b++;
+        }
+    });
+
+    // 顯示結果
+    const resultDiv = document.getElementById('result');
+    const resultLine = document.createElement('p');
+    resultLine.textContent = `猜測: ${guess} => ${a}A${b}B`;
+    resultDiv.appendChild(resultLine);
+
+    if (a === 4) {
+        alert(`答對了！總共猜了 ${attempts} 次`);
+        location.reload(); // 重新開始遊戲
+    }
+}
+
+    </script>
+</body>
+</html>
+
